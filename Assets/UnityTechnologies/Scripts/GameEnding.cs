@@ -15,22 +15,28 @@ public class GameEnding : MonoBehaviour
 
     [SerializeField] CanvasGroup caughtBackgroundImageCanvasGroup;
 
+    [SerializeField] AudioSource exitAudio;
+
+    [SerializeField] AudioSource caughtAudio;
+
     float m_Timer;
 
     bool m_IsPlayerExit;
 
     bool m_IsPlayerCaught;
 
+    bool m_HasAudioPlayed;
+
     private void Update()
     {
         if (m_IsPlayerExit)
         {
-            EndLevel(exitBackgroundImageCanvasGroup, false);
+            EndLevel(exitBackgroundImageCanvasGroup, false, exitAudio);
         }
         
         else if (m_IsPlayerCaught)
         {
-            EndLevel(caughtBackgroundImageCanvasGroup, true);
+            EndLevel(caughtBackgroundImageCanvasGroup, true, caughtAudio);
         }
     }
 
@@ -42,8 +48,15 @@ public class GameEnding : MonoBehaviour
         }
     }
 
-    void EndLevel(CanvasGroup imageCanvasGroup, bool doRestart)
+    void EndLevel(CanvasGroup imageCanvasGroup, bool doRestart, AudioSource audioSource)
     {
+        if (!m_HasAudioPlayed)
+        {
+            audioSource.Play();
+
+            m_HasAudioPlayed = true;
+        }
+
         m_Timer += Time.deltaTime;
 
         imageCanvasGroup.alpha = m_Timer / fadeDuraction;
